@@ -58,14 +58,10 @@ export class ChannelService {
         const callbackUrl = `${config.backendUrl}/api/channels/instagram/callback`;
         const scopes = [
             "instagram_basic",
-            "instagram_manage_messages",   // DMs + story replies
-            "instagram_manage_comments",   // comments + mentions
+            "instagram_manage_messages",
+            "instagram_manage_comments",
             "pages_show_list",
-            "pages_messaging",
-            "pages_read_engagement",
             "pages_manage_metadata",
-            "pages_read_user_content",
-            "pages_manage_engagement",
         ];
 
         if (needsBusiness) {
@@ -202,10 +198,9 @@ export class ChannelService {
         const callbackUrl = `${config.backendUrl}/api/channels/facebook/callback`;
         const scopes = [
             "pages_show_list",
-            "pages_messaging",             // FB DMs
-            "pages_read_engagement",       // read comments
-            "pages_manage_metadata",       // webhooks
-            "pages_read_user_content",     // read user posts/comments
+            "pages_messaging",
+            "pages_manage_metadata",
+            "pages_read_user_content",
             "pages_manage_engagement",
         ];
 
