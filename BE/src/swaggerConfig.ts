@@ -4,7 +4,7 @@ const options: swaggerJsdoc.Options = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "DM Agent SaaS - Node.js Backend API",
+            title: "Ykno Messiq Backend API",
             version: "1.0.0",
             description: "API documentation for the master backend service",
         },
