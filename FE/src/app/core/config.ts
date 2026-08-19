@@ -3,7 +3,7 @@
  */
 
 export const CONFIG = {
-    API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "https://semidormant-natalie-speedfully.ngrok-free.dev",
+    API_BASE_URL: import.meta.env.VITE_API_BASE_URL || "https://api.yknobruh.com",
     APP_NAME: "MessiQ",
     DEFAULT_CURRENCY: "USD",
     SUPPORTED_CURRENCIES: ["USD", "EUR", "GBP", "INR"],
