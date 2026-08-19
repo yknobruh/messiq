@@ -7,9 +7,10 @@ import { MessagesPage } from "../features/chat/pages/MessagesPage";
 import { CustomersPage } from "../features/customers/pages/CustomersPage";
 import { RouteErrorBoundary } from "./components/RouteErrorBoundary";
 import { PrivacyPage, TermsPage, DataDeletionPage } from "../features/pages/StaticPages";
+import { LandingPage } from "../features/dashboard/pages/LandingPage";
 
 function RedirectToLogin() {
-  return <Navigate to="/" replace />;
+  return <Navigate to="/login" replace />;
 }
 
 function RedirectToDashboard() {
@@ -17,7 +18,9 @@ function RedirectToDashboard() {
 }
 
 export const router = createBrowserRouter([
-  { path: "/", Component: LoginPage },
+  { path: "/", Component: LandingPage },
+  { path: "/login", Component: LoginPage },
+  { path: "/logic", Component: LoginPage },
   {
     path: "/dashboard",
     Component: DashboardLayout,
