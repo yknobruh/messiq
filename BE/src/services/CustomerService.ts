@@ -118,4 +118,9 @@ export class CustomerService {
         await this.tagRepository.remove(tag);
         return { status: "ok" };
     }
+
+    async deleteAllCustomers(storeId: string) {
+        await this.customerRepository.delete({ store_id: storeId });
+        return { status: "ok", message: "All customers deleted successfully." };
+    }
 }

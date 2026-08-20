@@ -93,10 +93,10 @@ export class WebhookService {
 
         customer = await this.customerRepository.findOneBy(where) as any;
 
-        let name: string | null = null;
+        let name: string | null = message.sender_name || null;
 
-        // Fetch sender's profile details from Meta Graph API if it's a new customer
-        if (!customer && accessToken) {
+        // Fetch sender's profile details from Meta Graph API if it's a new customer and name wasn't in payload
+        if (!customer && !name && accessToken) {
             try {
                 const axios = require("axios");
                 if (message.channel === "instagram") {

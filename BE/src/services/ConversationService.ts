@@ -136,4 +136,10 @@ export class ConversationService {
 
         return savedLog;
     }
+
+    async deleteAllMessages(storeId: string) {
+        await this.logRepository.delete({ store_id: storeId });
+        await this.sessionRepository.delete({ store_id: storeId });
+        return { status: "ok", message: "All messages and sessions deleted successfully." };
+    }
 }

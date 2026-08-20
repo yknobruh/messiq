@@ -20,6 +20,7 @@ const customerController = new CustomerController();
  *         description: Not authenticated
  */
 router.get("/", authMiddleware, customerController.list);
+router.delete("/", authMiddleware, customerController.deleteAll);
 
 /**
  * @swagger

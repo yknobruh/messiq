@@ -9,4 +9,5 @@ export interface InboundMessage {
     timestamp?: number;
     post_id?: string;
     comment_id?: string;
+    sender_name?: string;
 }

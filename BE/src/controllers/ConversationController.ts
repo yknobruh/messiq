@@ -54,4 +54,14 @@ export class ConversationController {
             res.status(err.status || 500).json({ detail: err.message || "Internal server error" });
         }
     }
+
+    async deleteAllMessages(req: Request, res: Response) {
+        try {
+            const storeId = (req as any).store.id;
+            const result = await conversationService.deleteAllMessages(storeId);
+            res.json(result);
+        } catch (err: any) {
+            res.status(500).json({ detail: "Internal server error" });
+        }
+    }
 }

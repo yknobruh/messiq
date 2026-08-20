@@ -13,6 +13,7 @@ const conversationController = new ConversationController();
  *     tags: [Chat]
  */
 router.get("/", authMiddleware, conversationController.sessions); // Moved from /sessions
+router.delete("/", authMiddleware, conversationController.deleteAllMessages);
 router.get("/:id", authMiddleware, conversationController.sessions); // Placeholder for single session if needed, or just list
 
 /**

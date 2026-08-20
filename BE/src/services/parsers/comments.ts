@@ -26,6 +26,7 @@ export function parseMetaChanges(payload: any): InboundMessage[] {
                         comment_id: value.id,
                         post_id: value.media?.id,
                         timestamp: entry.time,
+                        sender_name: value.from?.username || value.from?.name,
                     });
                 }
             } else if (obj_type === "page" && field === "feed") {
@@ -44,6 +45,7 @@ export function parseMetaChanges(payload: any): InboundMessage[] {
                             comment_id: value.comment_id,
                             post_id: value.parent_id || value.post_id,
                             timestamp: entry.time,
+                            sender_name: value.from?.name,
                         });
                     }
                 }

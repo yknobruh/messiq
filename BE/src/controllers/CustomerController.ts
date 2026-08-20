@@ -107,4 +107,14 @@ export class CustomerController {
             res.status(err.status || 500).json({ detail: err.message || "Internal server error" });
         }
     }
+
+    async deleteAll(req: Request, res: Response) {
+        try {
+            const storeId = (req as any).store.id;
+            const result = await customerService.deleteAllCustomers(storeId);
+            res.json(result);
+        } catch (err: any) {
+            res.status(500).json({ detail: "Internal server error" });
+        }
+    }
 }
