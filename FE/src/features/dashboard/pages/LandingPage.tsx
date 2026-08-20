@@ -707,7 +707,7 @@ export function LandingPage() {
             maxWidth: "600px",
             marginBottom: "36px"
           }}>
-            Create your account today, link your Instagram business profile, and start engaging customers instantly.
+            Create your account, connect your social channels, and start managing customer conversations instantly
           </p>
 
           <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", justifyContent: "center" }}>
