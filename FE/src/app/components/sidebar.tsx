@@ -1,6 +1,6 @@
 import { NavLink, Link } from "react-router";
 import { LayoutDashboard, Link2, MessageSquare, X, Users } from "lucide-react";
-import logo from "../../assets/ykno.png";
+import logo from "../../assets/Ykno.png";
 
 const menuItems = [
   { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
