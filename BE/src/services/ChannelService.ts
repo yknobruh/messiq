@@ -109,6 +109,16 @@ export class ChannelService {
     private async getPagesWithToken(accessToken: string) {
         const config = this.getMetaConfig();
 
+        // Debug permissions of this token
+        try {
+            const permResp = await axios.get(`${config.graphApi}/me/permissions`, {
+                params: { access_token: accessToken }
+            });
+            console.log("DEBUG: /me/permissions response:", JSON.stringify(permResp.data));
+        } catch (err: any) {
+            console.error("DEBUG: Failed to fetch permissions:", err.message);
+        }
+
         // 1. Try personal pages first
         const personalResp = await axios.get(`${config.graphApi}/me/accounts`, {
             params: {
