@@ -117,6 +117,8 @@ export class ChannelService {
             }
         });
 
+        console.log("DEBUG: /me/accounts response:", JSON.stringify(personalResp.data));
+
         if (personalResp.data.data?.length > 0) {
             console.log("Found personal pages");
             return personalResp.data.data;
