@@ -201,8 +201,6 @@ export class ChannelService {
             "pages_messaging",             // FB DMs
             "pages_read_engagement",       // read comments
             "pages_manage_metadata",       // webhooks
-            "pages_read_user_content",     // read user posts/comments
-            "pages_manage_engagement",
         ];
 
         if (needsBusiness) {
