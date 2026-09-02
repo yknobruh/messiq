@@ -162,19 +162,54 @@ export class ChannelService {
                 const pagesFromGranular: any[] = [];
                 for (const pageId of targetPageIds) {
                     try {
-                        const pageResp = await axios.get(`${config.graphApi}/${pageId}`, {
-                            params: {
-                                access_token: accessToken,
-                                fields: "access_token,name,id,instagram_business_account{id,username}"
+                        let pageData: any = null;
+                        try {
+                            const pageResp = await axios.get(`${config.graphApi}/${pageId}`, {
+                                params: {
+                                    access_token: accessToken,
+                                    fields: "access_token,name,id,instagram_business_account{id,username}"
+                                }
+                            });
+                            console.log(`DEBUG: Target ${pageId} full response:`, JSON.stringify(pageResp.data));
+                            pageData = pageResp.data;
+                        } catch (fieldErr: any) {
+                            console.log(`DEBUG: Full fields query failed for ${pageId}, attempting access_token only...`, fieldErr.response?.data?.error?.message || fieldErr.message);
+                            const tokenResp = await axios.get(`${config.graphApi}/${pageId}`, {
+                                params: {
+                                    access_token: accessToken,
+                                    fields: "access_token,id"
+                                }
+                            });
+                            console.log(`DEBUG: Target ${pageId} token-only response:`, JSON.stringify(tokenResp.data));
+                            if (tokenResp.data?.access_token) {
+                                const pageToken = tokenResp.data.access_token;
+                                try {
+                                    const detailsResp = await axios.get(`${config.graphApi}/${pageId}`, {
+                                        params: {
+                                            access_token: pageToken,
+                                            fields: "name,id,instagram_business_account{id,username}"
+                                        }
+                                    });
+                                    pageData = {
+                                        ...detailsResp.data,
+                                        access_token: pageToken
+                                    };
+                                } catch (detailsErr: any) {
+                                    pageData = {
+                                        id: tokenResp.data.id,
+                                        name: "Connected Page",
+                                        access_token: pageToken
+                                    };
+                                }
                             }
-                        });
-                        console.log(`DEBUG: Target ${pageId} response:`, JSON.stringify(pageResp.data));
-                        if (pageResp.data?.id) {
-                            // Use page access token if available, otherwise fallback to the user token
-                            const pageToken = pageResp.data.access_token || accessToken;
+                        }
+
+                        if (pageData?.id) {
+                            const pageToken = pageData.access_token || accessToken;
                             pagesFromGranular.push({
-                                ...pageResp.data,
-                                access_token: pageToken
+                                ...pageData,
+                                access_token: pageToken,
+                                name: pageData.name || `Page ${pageData.id}`
                             });
                         }
                     } catch (err: any) {
@@ -268,7 +303,6 @@ export class ChannelService {
         const scopes = [
             "pages_show_list",
             "pages_messaging",             // FB DMs
-            "pages_read_engagement",       // read comments
             "pages_manage_metadata",       // webhooks
         ];
 
