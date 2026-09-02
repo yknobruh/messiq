@@ -134,8 +134,65 @@ export class ChannelService {
             return personalResp.data.data;
         }
 
-        // 2. Fallback to business portfolio
-        console.log("No personal pages, trying business portfolio...");
+        // 2. Check debug_token for granular scopes (Pages selected by user during OAuth)
+        console.log("No personal pages in /me/accounts, checking granular_scopes via debug_token...");
+        try {
+            const appAccessToken = `${config.appId}|${config.appSecret}`;
+            const debugResp = await axios.get(`${config.graphApi}/debug_token`, {
+                params: {
+                    input_token: accessToken,
+                    access_token: appAccessToken
+                }
+            });
+            console.log("DEBUG: /debug_token response:", JSON.stringify(debugResp.data));
+
+            const granularScopes = debugResp.data.data?.granular_scopes || [];
+            const targetPageIds = new Set<string>();
+
+            for (const item of granularScopes) {
+                if (item.target_ids && Array.isArray(item.target_ids)) {
+                    for (const id of item.target_ids) {
+                        targetPageIds.add(id);
+                    }
+                }
+            }
+
+            if (targetPageIds.size > 0) {
+                console.log(`Found target IDs in granular_scopes: ${Array.from(targetPageIds).join(", ")}`);
+                const pagesFromGranular: any[] = [];
+                for (const pageId of targetPageIds) {
+                    try {
+                        const pageResp = await axios.get(`${config.graphApi}/${pageId}`, {
+                            params: {
+                                access_token: accessToken,
+                                fields: "access_token,name,id,instagram_business_account{id,username}"
+                            }
+                        });
+                        console.log(`DEBUG: Target ${pageId} response:`, JSON.stringify(pageResp.data));
+                        if (pageResp.data?.id) {
+                            // Use page access token if available, otherwise fallback to the user token
+                            const pageToken = pageResp.data.access_token || accessToken;
+                            pagesFromGranular.push({
+                                ...pageResp.data,
+                                access_token: pageToken
+                            });
+                        }
+                    } catch (err: any) {
+                        console.error(`DEBUG: Failed to query target ${pageId}:`, err.response?.data || err.message);
+                    }
+                }
+
+                if (pagesFromGranular.length > 0) {
+                    console.log(`Successfully resolved ${pagesFromGranular.length} page(s) from granular_scopes`);
+                    return pagesFromGranular;
+                }
+            }
+        } catch (err: any) {
+            console.error("DEBUG: Failed to inspect debug_token:", err.response?.data || err.message);
+        }
+
+        // 3. Fallback to business portfolio
+        console.log("No personal pages or granular targets, trying business portfolio...");
 
         let businessResp;
         try {
