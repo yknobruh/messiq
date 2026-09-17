@@ -142,20 +142,23 @@ export class ChannelService {
             throw new Error("No pages or business portfolios found.");
         }
 
-        // 3. Get pages from first business
-        // (you can loop all businesses if needed)
-        const businessId = businesses[0].id;
+        // 3. Get pages from businesses (checks first business, loops subsequent businesses if needed)
+        for (const business of businesses) {
+            try {
+                const bizPagesResp = await axios.get(`${config.graphApi}/${business.id}/owned_pages`, {
+                    params: {
+                        access_token: accessToken,
+                        fields: "access_token,name,id,instagram_business_account{id,username}"
+                    }
+                });
 
-        const bizPagesResp = await axios.get(`${config.graphApi}/${businessId}/owned_pages`, {
-            params: {
-                access_token: accessToken,
-                fields: "access_token,name,id,instagram_business_account{id,username}"
+                if (bizPagesResp.data.data?.length > 0) {
+                    console.log(`Found business portfolio pages in business ${business.id}`);
+                    return bizPagesResp.data.data;
+                }
+            } catch (err: any) {
+                console.warn(`Failed to fetch owned_pages for business ${business.id}:`, err.response?.data || err.message);
             }
-        });
-
-        if (bizPagesResp.data.data?.length > 0) {
-            console.log("Found business portfolio pages");
-            return bizPagesResp.data.data;
         }
 
         throw new Error("No Facebook Pages found anywhere.");

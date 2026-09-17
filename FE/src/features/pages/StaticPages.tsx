@@ -125,7 +125,7 @@ export function PrivacyPage() {
         <li style={{ fontSize: "0.9375rem", marginBottom: "8px" }}>Contact information (email, phone number).</li>
         <li style={{ fontSize: "0.9375rem", marginBottom: "8px" }}>Account credentials.</li>
         <li style={{ fontSize: "0.9375rem", marginBottom: "8px" }}>Business information.</li>
-        <li style={{ fontSize: "0.9375rem", marginBottom: "8px" }}>Access tokens for integrated platforms (e.g., Meta Page Access Tokens).</li>
+        <li style={{ fontSize: "0.9375rem", marginBottom: "8px" }}>Access tokens and permissions for integrated platforms (e.g., Meta Page Access Tokens and <code>business_management</code> to list and connect business-owned Facebook Pages and Instagram Business accounts, including development and test accounts).</li>
       </ul>
 
       <h2 style={{ fontSize: "1.25rem", fontWeight: 600, color: "#1C1629", marginTop: "32px", marginBottom: "12px" }}>2. How We Use Your Information</h2>
