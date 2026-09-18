@@ -264,7 +264,7 @@ export class ChannelService {
     getWhatsAppConnectUrl(storeId: string, needsBusiness: boolean = false) {
         const config = this.getMetaConfig();
         const callbackUrl = `${config.backendUrl}/api/channels/whatsapp/callback`;
-        const configId = process.env.WHATSAPP_CONFIG_ID || "27574420428897686";
+        const configId = process.env.WHATSAPP_CONFIG_ID || "1174738624723944";
 
         if (configId) {
             const extras = JSON.stringify({
