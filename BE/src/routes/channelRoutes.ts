@@ -162,5 +162,8 @@ router.get("/whatsapp/connect", authMiddleware, channelController.whatsappConnec
  *         description: Redirects after connection
  */
 router.get("/whatsapp/callback", channelController.whatsappCallback);
+const { WebhookController } = require("../controllers/WebhookController");
+const webhookController = new WebhookController();
+router.post("/whatsapp/callback", webhookController.receive);
 
 export default router;

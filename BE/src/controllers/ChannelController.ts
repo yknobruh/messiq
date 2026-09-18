@@ -109,6 +109,17 @@ export class ChannelController {
     }
 
     async whatsappCallback(req: Request, res: Response) {
+        // Handle webhook handshake if Meta probes this URL
+        const mode = req.query["hub.mode"];
+        const token = req.query["hub.verify_token"];
+        const challenge = req.query["hub.challenge"];
+        const META_VERIFY_TOKEN = process.env.META_VERIFY_TOKEN || "verify";
+
+        if (mode === "subscribe" && token === META_VERIFY_TOKEN) {
+            console.log("WhatsApp Callback webhook verification probe succeeded!");
+            return res.status(200).send(challenge);
+        }
+
         try {
             const errorParam = req.query.error || req.query.error_reason;
             if (errorParam) {
