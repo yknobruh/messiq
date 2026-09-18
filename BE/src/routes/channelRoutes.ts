@@ -132,4 +132,35 @@ router.get("/facebook/connect", authMiddleware, channelController.facebookConnec
  */
 router.get("/facebook/callback", channelController.facebookCallback);
 
+/**
+ * @swagger
+ * /api/channels/whatsapp/connect:
+ *   get:
+ *     summary: Get WhatsApp OAuth connection URL
+ *     tags: [Channels]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: OAuth URL
+ */
+router.get("/whatsapp/connect", authMiddleware, channelController.whatsappConnect);
+
+/**
+ * @swagger
+ * /api/channels/whatsapp/callback:
+ *   get:
+ *     summary: WhatsApp OAuth callback
+ *     tags: [Channels]
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         schema:
+ *           type: string
+ *     responses:
+ *       302:
+ *         description: Redirects after connection
+ */
+router.get("/whatsapp/callback", channelController.whatsappCallback);
+
 export default router;

@@ -5,6 +5,7 @@ import { ChatSession, ChatLog } from "../entities/Chat";
 import { InboundMessage } from "./parsers/types";
 import * as igSender from "./senders/instagram";
 import * as fbSender from "./senders/facebook";
+import * as waSender from "./senders/whatsapp";
 
 // In-memory cache to prevent lightning-fast concurrent duplicates from Meta
 const processedMessageIds = new Set<string>();
@@ -90,6 +91,7 @@ export class WebhookService {
         const where: any = { store_id: storeId, is_merged: false };
         if (message.channel === "instagram") where.insta_id = message.sender_id;
         else if (message.channel === "facebook") where.fb_psid = message.sender_id;
+        else if (message.channel === "whatsapp") where.phone = message.sender_id;
 
         customer = await this.customerRepository.findOneBy(where) as any;
 
@@ -202,6 +204,8 @@ export class WebhookService {
             } else {
                 await fbSender.sendText(token, message.sender_id, response);
             }
+        } else if (message.channel === "whatsapp") {
+            await waSender.sendText(token, storeChannel.external_id, message.sender_id, response);
         }
     }
 }

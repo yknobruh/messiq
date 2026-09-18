@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { WebhookService } from "../services/WebhookService";
-import { parseInstagramWebhook, parseFacebookWebhook } from "../services/parsers/meta";
+import { parseInstagramWebhook, parseFacebookWebhook, parseWhatsAppWebhook } from "../services/parsers/meta";
 import { parseMetaChanges } from "../services/parsers/comments";
 import dotenv from "dotenv";
 
@@ -36,6 +36,8 @@ export class WebhookController {
             messages = parseInstagramWebhook(payload);
         } else if (objType === "page") {
             messages = parseFacebookWebhook(payload);
+        } else if (objType === "whatsapp_business_account") {
+            messages = parseWhatsAppWebhook(payload);
         }
 
 

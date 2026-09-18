@@ -113,3 +113,62 @@ export function parseFacebookWebhook(payload: any): InboundMessage[] {
 
     return messages;
 }
+
+export function parseWhatsAppWebhook(payload: any): InboundMessage[] {
+    const messages: InboundMessage[] = [];
+
+    for (const entry of payload.entry || []) {
+        for (const change of entry.changes || []) {
+            const val = change.value || {};
+            const phoneNumberId = val.metadata?.phone_number_id || entry.id;
+            const contacts = val.contacts || [];
+            const contactMap: Record<string, string> = {};
+            for (const c of contacts) {
+                if (c.wa_id) {
+                    contactMap[c.wa_id] = c.profile?.name || "";
+                }
+            }
+
+            for (const msg of val.messages || []) {
+                const senderId = msg.from;
+                const senderName = contactMap[senderId] || null;
+                let msgType = msg.type || "text";
+                let text = "";
+                let mediaUrl = "";
+
+                if (msgType === "text") {
+                    text = msg.text?.body || "";
+                } else if (msgType === "image") {
+                    text = msg.image?.caption || "[Image received]";
+                } else if (msgType === "video") {
+                    text = msg.video?.caption || "[Video received]";
+                } else if (msgType === "audio" || msgType === "voice") {
+                    text = "[Voice message received]";
+                } else if (msgType === "button") {
+                    text = msg.button?.text || msg.button?.payload || "";
+                } else if (msgType === "interactive") {
+                    text = msg.interactive?.button_reply?.title || msg.interactive?.list_reply?.title || "";
+                } else {
+                    text = `[${msgType} message received]`;
+                }
+
+                if (text && senderId) {
+                    messages.push({
+                        channel: "whatsapp",
+                        sender_id: senderId,
+                        sender_name: senderName,
+                        phone_number_id: phoneNumberId,
+                        message_text: text,
+                        message_type: msgType,
+                        media_url: mediaUrl,
+                        external_msg_id: msg.id,
+                        timestamp: msg.timestamp ? parseInt(msg.timestamp) * 1000 : Date.now(),
+                    });
+                }
+            }
+        }
+    }
+
+    return messages;
+}
+

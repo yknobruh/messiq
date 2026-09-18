@@ -1,5 +1,5 @@
 export interface InboundMessage {
-    channel: "instagram" | "facebook";
+    channel: "instagram" | "facebook" | "whatsapp";
     sender_id: string;
     phone_number_id: string; // The store's page/channel identifier
     message_text: string;
@@ -9,5 +9,5 @@ export interface InboundMessage {
     timestamp?: number;
     post_id?: string;
     comment_id?: string;
-    sender_name?: string;
+    sender_name?: string | null;
 }

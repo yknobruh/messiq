@@ -67,6 +67,7 @@ function formatTime(dateStr: string): string {
 const channelColors: Record<string, { bg: string; text: string }> = {
   instagram: { bg: "bg-pink-50", text: "text-pink-600" },
   facebook: { bg: "bg-blue-50", text: "text-blue-600" },
+  whatsapp: { bg: "bg-emerald-50", text: "text-emerald-600" },
 };
 const defaultChannel = { bg: "bg-gray-50", text: "text-gray-600" };
 

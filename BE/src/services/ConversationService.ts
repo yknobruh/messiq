@@ -4,6 +4,7 @@ import { Customer } from "../entities/Customer";
 import { StoreChannel } from "../entities/StoreChannel";
 import * as igSender from "./senders/instagram";
 import * as fbSender from "./senders/facebook";
+import * as waSender from "./senders/whatsapp";
 
 export class ConversationService {
     private sessionRepository = AppDataSource.getRepository(ChatSession);
@@ -114,6 +115,10 @@ export class ConversationService {
             const recipientId = session.customer.fb_psid;
             if (!recipientId) throw { status: 400, message: "Customer does not have a Facebook PSID linked" };
             await fbSender.sendText(channel.access_token, recipientId, messageText);
+        } else if (session.channel === "whatsapp") {
+            const recipientId = session.customer.phone;
+            if (!recipientId) throw { status: 400, message: "Customer does not have a WhatsApp phone number linked" };
+            await waSender.sendText(channel.access_token, channel.external_id, recipientId, messageText);
         } else {
             throw { status: 400, message: `Channel ${session.channel} is not supported` };
         }

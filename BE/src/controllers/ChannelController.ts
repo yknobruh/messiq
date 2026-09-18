@@ -96,4 +96,45 @@ export class ChannelController {
             res.redirect(`${FRONTEND_URL}/dashboard/connections?error=oauth_failed`);
         }
     }
+
+    async whatsappConnect(req: Request, res: Response) {
+        try {
+            const storeId = (req as any).store.id;
+            const needsBusiness = req.query.business === "true";
+            const authUrl = channelService.getWhatsAppConnectUrl(storeId, needsBusiness);
+            res.json({ auth_url: authUrl });
+        } catch (err: any) {
+            res.status(500).json({ detail: "Internal server error" });
+        }
+    }
+
+    async whatsappCallback(req: Request, res: Response) {
+        try {
+            const errorParam = req.query.error || req.query.error_reason;
+            if (errorParam) {
+                console.error("WhatsApp OAuth Error returned from Meta:", req.query);
+                return res.redirect(`${FRONTEND_URL}/dashboard/connections?error=${encodeURIComponent(String(errorParam))}`);
+            }
+
+            const code = String(req.query.code || "");
+            const storeId = String(req.query.state || "");
+
+            if (!code) {
+                console.error("WhatsApp OAuth Callback missing code parameter:", req.query);
+                return res.redirect(`${FRONTEND_URL}/dashboard/connections?error=no_code`);
+            }
+
+            await channelService.handleWhatsAppCallback(code, storeId);
+            res.redirect(`${FRONTEND_URL}/dashboard/connections?channel_connected=whatsapp`);
+        } catch (err: any) {
+            console.error("WhatsApp Callback Error:", err);
+            const errorLog = `WA Error at ${new Date().toISOString()}:\n${err.message}\n${err.stack}\n${JSON.stringify(err.response?.data || {}, null, 2)}\n\n`;
+            fs.appendFileSync("/tmp/callback_error.log", errorLog);
+
+            if (err.message?.includes("BUSINESS_PORTFOLIO_REQUIRED")) {
+                return res.redirect(`${FRONTEND_URL}/dashboard/connections?error=business_portfolio_required`);
+            }
+            res.redirect(`${FRONTEND_URL}/dashboard/connections?error=oauth_failed`);
+        }
+    }
 }
